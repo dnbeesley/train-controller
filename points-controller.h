@@ -52,6 +52,7 @@ private:
 
     void calculateNewState(unsigned char channel);
     void outputPulseImpl(unsigned char channel);
+    void setPin(uint8_t pin, uint8_t value);
 };
 
 extern PointsControllerClass PointsController;

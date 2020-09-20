@@ -68,34 +68,46 @@ int PointsControllerClass::outputPulse(unsigned char channel)
 
 void PointsControllerClass::outputPulseImpl(unsigned char channel)
 {
-    // 7 output on each multiplexer connected to MOSFETs.
+    // 7 outputs on each multiplexer connected to MOSFETs.
     unsigned char multiplexer = channel / 7;
+    Serial.print("Using multiplexer: ");
+    Serial.println(multiplexer, DEC);
 
     // Output 0 of each multiplexer is not connected to anything.
     unsigned char multiplexerInput = (channel % 7) + 1;
-    digitalWrite(
-        multiplexer != 0 ? this->output0Pin : this->output3Pin,
+    Serial.print("Outputting signature: ");
+    Serial.println(multiplexerInput, DEC);
+    this->setPin(
+        multiplexer == 0 ? this->output0Pin : this->output3Pin,
         (multiplexerInput & 0x01) != 0x00 ? HIGH : LOW);
-    digitalWrite(multiplexer != 0 ? this->output3Pin : this->output0Pin, LOW);
+    this->setPin(multiplexer == 0 ? this->output3Pin : this->output0Pin, LOW);
 
-    digitalWrite(
-        multiplexer != 0 ? this->output1Pin : this->output4Pin,
+    this->setPin(
+        multiplexer == 0 ? this->output1Pin : this->output4Pin,
         (multiplexerInput & 0x02) != 0x00 ? HIGH : LOW);
-    digitalWrite(multiplexer != 0 ? this->output4Pin : this->output1Pin, LOW);
+    this->setPin(multiplexer == 0 ? this->output4Pin : this->output1Pin, LOW);
 
-    digitalWrite(
-        multiplexer != 0 ? this->output1Pin : this->output4Pin,
+    this->setPin(
+        multiplexer == 0 ? this->output2Pin : this->output4Pin,
         (multiplexerInput & 0x04) != 0x00 ? HIGH : LOW);
-    digitalWrite(multiplexer != 0 ? this->output5Pin : this->output2Pin, LOW);
+    this->setPin(multiplexer == 0 ? this->output5Pin : this->output2Pin, LOW);
 
-    digitalWrite(this->enablePin, HIGH);
+    this->setPin(this->enablePin, HIGH);
     delay(this->pulseTime);
-    digitalWrite(this->enablePin, LOW);
+    this->setPin(this->enablePin, LOW);
 
-    digitalWrite(this->output0Pin, LOW);
-    digitalWrite(this->output1Pin, LOW);
-    digitalWrite(this->output2Pin, LOW);
-    digitalWrite(this->output3Pin, LOW);
-    digitalWrite(this->output4Pin, LOW);
-    digitalWrite(this->output5Pin, LOW);
+    this->setPin(this->output0Pin, LOW);
+    this->setPin(this->output1Pin, LOW);
+    this->setPin(this->output2Pin, LOW);
+    this->setPin(this->output3Pin, LOW);
+    this->setPin(this->output4Pin, LOW);
+    this->setPin(this->output5Pin, LOW);
+}
+
+void PointsControllerClass::setPin(uint8_t pin, uint8_t value)
+{
+    Serial.print("Setting pin: ");
+    Serial.print(pin, DEC);
+    Serial.println(value == HIGH ? " high" : " low");
+    digitalWrite(pin, value);
 }
