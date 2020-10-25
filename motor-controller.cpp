@@ -5,6 +5,7 @@ MotorControllerClass MotorController;
 
 void MotorControllerClass::begin()
 {
+    this->state = 0;
     pinMode(this->brakeAPin, OUTPUT);
     digitalWrite(this->brakeAPin, LOW);
     pinMode(this->brakeBPin, OUTPUT);
@@ -49,13 +50,20 @@ int MotorControllerClass::setState(unsigned char channel, unsigned char speed, b
     analogWrite(channel != 0x00 ? this->pwmBPin : this->pwmAPin, speed);
     digitalWrite(channel != 0x00 ? this->directionBPin : this->directionAPin, reversed ? HIGH : LOW);
 
-    if (reversed)
+    if(speed == 0)
     {
-        this->state |= 0x01 << channel;
+        this->state &= ~(0x01 << (channel * 2));
+        this->state &= ~(0x01 << (channel * 2 + 1));
+    }
+    else if (reversed)
+    {
+        this->state &= ~(0x01 << (channel * 2));
+        this->state |= 0x01 << (channel * 2 + 1);
     }
     else
     {
-        this->state &= ~(0x01 << channel);
+        this->state |= 0x01 << (channel * 2);
+        this->state &= ~(0x01 << (channel * 2 + 1));
     }
 
     return this->state;
