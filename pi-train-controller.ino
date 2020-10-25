@@ -8,23 +8,23 @@
 SingalCondition signalSet0Contions[4] = {
     {.motorState = 0x01,
      .pointsState = 0x01,
-     .result = 0x1A},
+     .result = 0xA9},
     {.motorState = 0x01,
      .pointsState = 0x02,
-     .result = 0x7A},
+     .result = 0xA6},
     {.motorState = 0x02,
      .pointsState = 0x01,
-     .result = 0xA9},
+     .result = 0x4A},
     {.motorState = 0x02,
      .pointsState = 0x02,
-     .result = 0xA6}};
+     .result = 0xDA}};
 
 SignalSet signalSets[1] = {
     {.conditions = signalSet0Contions,
      .conditionCount = 4,
      .address = 0x60,
      .currentState = 0x0,
-     .defaultState = 0xFF}};
+     .defaultState = 0xAA}};
 
 Command command;
 int returnValue;
