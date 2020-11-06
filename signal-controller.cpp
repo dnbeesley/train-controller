@@ -50,11 +50,17 @@ unsigned char SignalControllerClass::calculateNewState(SignalSet *signalSet, uns
 {
     for (int i = 0; i < signalSet->conditionCount; i++)
     {
-        if ((signalSet->conditions[i].motorState & motorState) && (signalSet->conditions[i].pointsState & pointsState))
+        if (statesMatch(signalSet->conditions[i].motorState, motorState) &&
+            statesMatch(signalSet->conditions[i].pointsState, pointsState))
         {
             return signalSet->conditions[i].result;
         }
     }
 
     return signalSet->defaultState;
+}
+
+bool SignalControllerClass::statesMatch(unsigned short expected, unsigned short actual)
+{
+    return expected & actual == expected;
 }

@@ -23,6 +23,7 @@ public:
 
 private:
     unsigned char calculateNewState(SignalSet *signalSet, unsigned short motorState, unsigned short pointsState);
+    bool statesMatch(unsigned short expected, unsigned short actual);
     SignalSet *signalSets;
     unsigned int signalSetCount;
 };
