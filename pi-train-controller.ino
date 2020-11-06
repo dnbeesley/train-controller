@@ -23,13 +23,13 @@ SingalCondition signalSet1Contions[4] = {
     {.motorState = 0x01,
      .pointsState = 0x04,
      .result = 0xA6},
-    {.motorState = 0x06,
+    {.motorState = 0x09,
      .pointsState = 0x08,
      .result = 0xA9},
     {.motorState = 0x02,
      .pointsState = 0x04,
      .result = 0x4A},
-    {.motorState = 0x09,
+    {.motorState = 0x06,
      .pointsState = 0x18,
      .result = 0xDA}};
 
@@ -54,7 +54,7 @@ void setup()
   Serial.begin(9600);
   MotorController.begin();
   PointsController.begin(16, 10, 7, 6, 5, 4, 2, 500);
-  SignalController.begin(signalSets, 1);
+  SignalController.begin(signalSets, 2);
 }
 
 void loop()
