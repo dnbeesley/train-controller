@@ -33,7 +33,30 @@ SingalCondition signalSet1Contions[4] = {
      .pointsState = 0x18,
      .result = 0xDA}};
 
-SignalSet signalSets[2] = {
+SingalCondition signalSet2Contions[7] = {
+    {.motorState = 0x09,
+     .pointsState = 0x18,
+     .result = 0xA1},
+    {.motorState = 0x08,
+     .pointsState = 0x10,
+     .result = 0xA3},
+    {.motorState = 0x08,
+     .pointsState = 0x20,
+     .result = 0xA6},
+    {.motorState = 0x05,
+     .pointsState = 0x62,
+     .result = 0x9A},
+    {.motorState = 0x04,
+     .pointsState = 0x60,
+     .result = 0xBA},
+    {.motorState = 0x05,
+     .pointsState = 0xA2,
+     .result = 0x6A},
+    {.motorState = 0x04,
+     .pointsState = 0xA0,
+     .result = 0xEA}};
+
+SignalSet signalSets[3] = {
     {.conditions = signalSet0Contions,
      .conditionCount = 4,
      .address = 0x60,
@@ -42,6 +65,11 @@ SignalSet signalSets[2] = {
     {.conditions = signalSet1Contions,
      .conditionCount = 4,
      .address = 0x61,
+     .currentState = 0x0,
+     .defaultState = 0xAA},
+    {.conditions = signalSet2Contions,
+     .conditionCount = 7,
+     .address = 0x62,
      .currentState = 0x0,
      .defaultState = 0xAA}};
 
@@ -54,7 +82,7 @@ void setup()
   Serial.begin(9600);
   MotorController.begin();
   PointsController.begin(16, 10, 7, 6, 5, 4, 2, 500);
-  SignalController.begin(signalSets, 2);
+  SignalController.begin(signalSets, 3);
 }
 
 void loop()
