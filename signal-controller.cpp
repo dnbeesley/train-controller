@@ -25,6 +25,20 @@ void SignalControllerClass::begin(SignalSet *signalSets, unsigned int signalSetC
     }
 }
 
+int SignalControllerClass::readDeviceState(uint8_t address)
+{
+  Wire.requestFrom(address, (uint8_t)2);
+  Serial.print("Bytes available: ");
+  Serial.println(Wire.available());
+  Serial.print("Device ");
+  Serial.print(address, HEX);
+  Serial.print(" state: ");
+  Serial.print(Wire.read());
+  Serial.print(", ");
+  Serial.println(Wire.read());
+  return 0;
+}
+
 void SignalControllerClass::updateSignalSets(unsigned short motorState, unsigned short pointsState)
 {
     for (int i = 0; i < this->signalSetCount; i++)

@@ -1,5 +1,5 @@
 
-struct SingalCondition
+struct SignalCondition
 {
     unsigned short motorState;
     unsigned short pointsState;
@@ -8,7 +8,7 @@ struct SingalCondition
 
 struct SignalSet
 {
-    SingalCondition *conditions;
+    SignalCondition *conditions;
     unsigned int conditionCount;
     unsigned char address;
     unsigned char currentState;
@@ -19,6 +19,7 @@ class SignalControllerClass
 {
 public:
     void begin(SignalSet *signalSets, unsigned int signalSetCount);
+    int readDeviceState(uint8_t address);
     void updateSignalSets(unsigned short motorState, unsigned short pointsState);
 
 private:

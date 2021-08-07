@@ -78,7 +78,21 @@ int CommandReaderClass::readCommand(Command *command)
         command->IsReversed = false;
 
         Serial.print("Read the amount of current drawn from motor channel ");
-        Serial.println(command->Value, HEX);
+        Serial.println(command->Channel, HEX);
+        break;
+
+    case READ_DEVICE_COMMAND:
+        if (i < 2)
+        {
+            Serial.println("A read device command must have at least 2 bytes plus a terminator.");
+            return -1;
+        }
+
+        command->Channel = buffer[1];
+        command->IsReversed = false;
+
+        Serial.print("Read the the state of device ");
+        Serial.println(command->Channel, HEX);
         break;
 
     default:

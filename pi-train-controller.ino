@@ -5,7 +5,7 @@
 #include "points-controller.h"
 #include "signal-controller.h"
 
-SingalCondition signalSet0Contions[4] = {
+SignalCondition signalSet0Contions[4] = {
     {.motorState = 0x01,
      .pointsState = 0x01,
      .result = 0xA9},
@@ -19,7 +19,7 @@ SingalCondition signalSet0Contions[4] = {
      .pointsState = 0x02,
      .result = 0xDA}};
 
-SingalCondition signalSet1Contions[4] = {
+SignalCondition signalSet1Contions[4] = {
     {.motorState = 0x01,
      .pointsState = 0x04,
      .result = 0xA6},
@@ -33,7 +33,7 @@ SingalCondition signalSet1Contions[4] = {
      .pointsState = 0x18,
      .result = 0xDA}};
 
-SingalCondition signalSet2Contions[7] = {
+SignalCondition signalSet2Contions[7] = {
     {.motorState = 0x09,
      .pointsState = 0x18,
      .result = 0xA1},
@@ -109,6 +109,9 @@ void loop()
       returnValue = MotorController.getCurrent(command.Channel);
       Serial.print("Current drawn ");
       Serial.println(returnValue, HEX);
+      break;
+    case READ_DEVICE_COMMAND:
+      returnValue = SignalController.readDeviceState(command.Channel);
       break;
     }
 
