@@ -17,41 +17,41 @@ public:
          * @param pulseTime The number of milliseconds which the output pulse should last.
          **/
     void begin(
-        unsigned char enablePin,
-        unsigned char output0Pin,
-        unsigned char output1Pin,
-        unsigned char output2Pin,
-        unsigned char output3Pin,
-        unsigned char output4Pin,
-        unsigned char output5Pin,
-        unsigned short pulseTime);
+        uint8_t enablePin,
+        uint8_t output0Pin,
+        uint8_t output1Pin,
+        uint8_t output2Pin,
+        uint8_t output3Pin,
+        uint8_t output4Pin,
+        uint8_t output5Pin,
+        uint16_t pulseTime);
 
     /**
          * Returns the state of the set of points as a bit set.
          * @return The state as a bitset.
          */
-    unsigned short getState();
+    uint16_t getState();
 
     /**
          * Allows a pulse of current to flow through the specified channel.
          * @param channel The channel on which to allow the output.
          * @return The new state if channel number is valid, -1 otherwise
          **/
-    int outputPulse(unsigned char channel);
+    int outputPulse(uint8_t channel);
 
 private:
-    unsigned short pulseTime;
-    unsigned short state;
-    unsigned char enablePin;
-    unsigned char output0Pin;
-    unsigned char output1Pin;
-    unsigned char output2Pin;
-    unsigned char output3Pin;
-    unsigned char output4Pin;
-    unsigned char output5Pin;
+    uint16_t pulseTime;
+    uint16_t state;
+    uint8_t enablePin;
+    uint8_t output0Pin;
+    uint8_t output1Pin;
+    uint8_t output2Pin;
+    uint8_t output3Pin;
+    uint8_t output4Pin;
+    uint8_t output5Pin;
 
-    void calculateNewState(unsigned char channel);
-    void outputPulseImpl(unsigned char channel);
+    void calculateNewState(uint8_t channel);
+    void outputPulseImpl(uint8_t channel);
     void setPin(uint8_t pin, uint8_t value);
 };
 

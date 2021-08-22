@@ -42,7 +42,7 @@ int CommandReaderClass::readCommand(Command *command)
         }
 
         command->Channel = buffer[1];
-        command->Value = ((unsigned short)buffer[3]) + 0x40 * ((unsigned short)(buffer[2] % 0x04));
+        command->Value = ((uint16_t)buffer[3]) + 0x40 * ((uint16_t)(buffer[2] % 0x04));
         command->IsReversed = (buffer[2] & 0x04) != 0;
 
         Serial.print("Motor ");

@@ -4,14 +4,14 @@
 PointsControllerClass PointsController;
 
 void PointsControllerClass::begin(
-    unsigned char enablePin,
-    unsigned char output0Pin,
-    unsigned char output1Pin,
-    unsigned char output2Pin,
-    unsigned char output3Pin,
-    unsigned char output4Pin,
-    unsigned char output5Pin,
-    unsigned short pulseTime)
+    uint8_t enablePin,
+    uint8_t output0Pin,
+    uint8_t output1Pin,
+    uint8_t output2Pin,
+    uint8_t output3Pin,
+    uint8_t output4Pin,
+    uint8_t output5Pin,
+    uint16_t pulseTime)
 {
     this->enablePin = enablePin;
     this->output0Pin = output0Pin;
@@ -39,22 +39,22 @@ void PointsControllerClass::begin(
     digitalWrite(output5Pin, LOW);
 }
 
-void PointsControllerClass::calculateNewState(unsigned char channel)
+void PointsControllerClass::calculateNewState(uint8_t channel)
 {
-    unsigned char complementaryChannel = channel ^ 0x01;
-    unsigned short bitSet = 0x0001 << channel;
-    unsigned short complementaryBitSet = ~(0x0001 << complementaryChannel);
+    uint8_t complementaryChannel = channel ^ 0x01;
+    uint16_t bitSet = 0x0001 << channel;
+    uint16_t complementaryBitSet = ~(0x0001 << complementaryChannel);
 
     this->state |= bitSet;
     this->state &= complementaryBitSet;
 }
 
-unsigned short PointsControllerClass::getState()
+uint16_t PointsControllerClass::getState()
 {
     return this->state;
 }
 
-int PointsControllerClass::outputPulse(unsigned char channel)
+int PointsControllerClass::outputPulse(uint8_t channel)
 {
     if (channel > 13)
     {
@@ -66,15 +66,15 @@ int PointsControllerClass::outputPulse(unsigned char channel)
     return this->state;
 }
 
-void PointsControllerClass::outputPulseImpl(unsigned char channel)
+void PointsControllerClass::outputPulseImpl(uint8_t channel)
 {
     // 7 outputs on each multiplexer connected to MOSFETs.
-    unsigned char multiplexer = channel / 7;
+    uint8_t multiplexer = channel / 7;
     Serial.print("Using multiplexer: ");
     Serial.println(multiplexer, DEC);
 
     // Output 0 of each multiplexer is not connected to anything.
-    unsigned char multiplexerInput = (channel % 7) + 1;
+    uint8_t multiplexerInput = (channel % 7) + 1;
     Serial.print("Outputting signature: ");
     Serial.println(multiplexerInput, DEC);
     this->setPin(

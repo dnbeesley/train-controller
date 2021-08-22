@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #include "command-reader.h"
 #include "motor-controller.h"
@@ -75,6 +76,7 @@ SignalSet signalSets[3] = {
 
 Command command;
 int returnValue;
+uint8_t state[2];
 bool potentialSignalChange;
 
 void setup()
@@ -87,31 +89,36 @@ void setup()
 
 void loop()
 {
+  StaticJsonDocument<64> doc;
   potentialSignalChange = false;
   returnValue = CommandReader.readCommand(&command);
   if (returnValue == 0)
   {
+    doc["cmd"] = command.CommandType;
     switch (command.CommandType)
     {
     case MOTOR_COMMAND:
       potentialSignalChange = true;
       returnValue = MotorController.setState(command.Channel, command.Value, command.IsReversed);
-      Serial.print("Motor state ");
-      Serial.println(returnValue, HEX);
+      doc["state"] = returnValue;
       break;
     case POINTS_COMMAND:
       potentialSignalChange = true;
       returnValue = PointsController.outputPulse(command.Channel);
-      Serial.print("Points state ");
-      Serial.println(returnValue, HEX);
+      doc["state"] = returnValue;
       break;
     case READ_CURRENT_COMMAND:
       returnValue = MotorController.getCurrent(command.Channel);
-      Serial.print("Current drawn ");
-      Serial.println(returnValue, HEX);
+      doc["state"] = returnValue;
       break;
     case READ_DEVICE_COMMAND:
-      returnValue = SignalController.readDeviceState(command.Channel);
+      returnValue = SignalController.readDeviceState(command.Channel, state, 2);
+      doc["address"] = command.Channel;
+      JsonArray data = doc.createNestedArray("states");
+      for(int i; (i < returnValue && i < 2); i++) {
+        data.add(state[i]);
+      }
+
       break;
     }
 
@@ -119,5 +126,8 @@ void loop()
     {
       SignalController.updateSignalSets(MotorController.getState(), PointsController.getState());
     }
+
+    serializeJson(doc, Serial);
+    Serial.println();
   }
 }

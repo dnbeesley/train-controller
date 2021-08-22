@@ -14,13 +14,13 @@ public:
          * @param channel The channel to monitor.
          * @return The amount of current being drawn, if the channel is valid, -1 otherise.
          **/
-    int getCurrent(unsigned char channel);
+    int getCurrent(uint8_t channel);
 
     /**
          * Gets the state of the motor controller.
          * @returns The state as a bitset.
          **/
-    unsigned char getState();
+    uint8_t getState();
 
     /**
          * Sets the state for the specified channel.
@@ -29,18 +29,18 @@ public:
          * @param reversed Whether the direction of the current should be reversed.
          * @return The new state, if input is valid, -1 otherwise.
          **/
-    int setState(unsigned char channel, unsigned char speed, bool reversed);
+    int setState(uint8_t channel, uint8_t speed, bool reversed);
 
 private:
-    const unsigned char brakeAPin = 9;
-    const unsigned char brakeBPin = 8;
-    const unsigned char directionAPin = 12;
-    const unsigned char directionBPin = 13;
-    const unsigned char pwmAPin = 3;
-    const unsigned char pwmBPin = 11;
-    const unsigned char senseAPin = 0;
-    const unsigned char senseBPin = 1;
-    unsigned char state;
+    const uint8_t brakeAPin = 9;
+    const uint8_t brakeBPin = 8;
+    const uint8_t directionAPin = 12;
+    const uint8_t directionBPin = 13;
+    const uint8_t pwmAPin = 3;
+    const uint8_t pwmBPin = 11;
+    const uint8_t senseAPin = 0;
+    const uint8_t senseBPin = 1;
+    uint8_t state;
 };
 
 extern MotorControllerClass MotorController;

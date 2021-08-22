@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <Wire.h>
 #include "signal-controller.h"
 
@@ -6,6 +7,8 @@ SignalControllerClass SignalController;
 
 void SignalControllerClass::begin(SignalSet *signalSets, unsigned int signalSetCount)
 {
+    StaticJsonDocument<64> doc;
+    JsonObject obj = doc.createNestedObject("twi");
     Wire.begin();
     this->signalSets = signalSets;
     this->signalSetCount = signalSetCount;
@@ -18,32 +21,33 @@ void SignalControllerClass::begin(SignalSet *signalSets, unsigned int signalSetC
         Wire.endTransmission();
         this->signalSets[i].currentState = this->signalSets[i].defaultState;
 
-        Serial.print("Initialised state of signal @ address: ");
-        Serial.print(this->signalSets[i].address, HEX);
-        Serial.print(" to: ");
-        Serial.println(this->signalSets[i].defaultState, HEX);
+        obj[String(this->signalSets[i].address, HEX)] = this->signalSets[i].defaultState;
     }
+
+    serializeJson(doc, Serial);
+    Serial.println();
 }
 
-int SignalControllerClass::readDeviceState(uint8_t address)
+int SignalControllerClass::readDeviceState(uint8_t address, uint8_t* buffer, uint8_t quantity)
 {
-  Wire.requestFrom(address, (uint8_t)2);
-  Serial.print("Bytes available: ");
-  Serial.println(Wire.available());
-  Serial.print("Device ");
-  Serial.print(address, HEX);
-  Serial.print(" state: ");
-  Serial.print(Wire.read());
-  Serial.print(", ");
-  Serial.println(Wire.read());
-  return 0;
+  Wire.requestFrom(address, quantity);
+  int available = Wire.available();
+  for(int i; (i < available && i < quantity); i++) {
+      buffer[i] = Wire.read();
+  }
+
+  return available;
 }
 
-void SignalControllerClass::updateSignalSets(unsigned short motorState, unsigned short pointsState)
+void SignalControllerClass::updateSignalSets(uint16_t motorState, uint16_t pointsState)
 {
+    StaticJsonDocument<64> doc;
+    JsonObject obj = doc.createNestedObject("twi");
+    bool hasEntries = false;
+
     for (int i = 0; i < this->signalSetCount; i++)
     {
-        unsigned char newState = this->calculateNewState(&this->signalSets[i], motorState, pointsState);
+        uint8_t newState = this->calculateNewState(&this->signalSets[i], motorState, pointsState);
         if (newState != this->signalSets[i].currentState)
         {
             Wire.beginTransmission(this->signalSets[i].address);
@@ -52,15 +56,18 @@ void SignalControllerClass::updateSignalSets(unsigned short motorState, unsigned
             Wire.endTransmission();
             this->signalSets[i].currentState = newState;
 
-            Serial.print("Changed state of signal @ address: ");
-            Serial.print(this->signalSets[i].address, HEX);
-            Serial.print(" to: ");
-            Serial.println(newState, HEX);
+            hasEntries = true;
+            obj[String(this->signalSets[i].address, HEX)] = newState;
         }
+    }
+
+    if(hasEntries) {
+        serializeJson(doc, Serial);
+        Serial.println();
     }
 }
 
-unsigned char SignalControllerClass::calculateNewState(SignalSet *signalSet, unsigned short motorState, unsigned short pointsState)
+uint8_t SignalControllerClass::calculateNewState(SignalSet *signalSet, uint16_t motorState, uint16_t pointsState)
 {
     for (int i = 0; i < signalSet->conditionCount; i++)
     {
@@ -74,7 +81,7 @@ unsigned char SignalControllerClass::calculateNewState(SignalSet *signalSet, uns
     return signalSet->defaultState;
 }
 
-bool SignalControllerClass::statesMatch(unsigned short expected, unsigned short actual)
+bool SignalControllerClass::statesMatch(uint16_t expected, uint16_t actual)
 {
     return (expected & actual) == expected;
 }

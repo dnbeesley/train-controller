@@ -25,7 +25,7 @@ void MotorControllerClass::begin()
     pinMode(this->senseBPin, INPUT);
 }
 
-int MotorControllerClass::getCurrent(unsigned char channel)
+int MotorControllerClass::getCurrent(uint8_t channel)
 {
     if (channel > 1)
     {
@@ -35,12 +35,12 @@ int MotorControllerClass::getCurrent(unsigned char channel)
     return analogRead(channel != 0 ? this->senseBPin : this->senseAPin);
 }
 
-unsigned char MotorControllerClass::getState()
+uint8_t MotorControllerClass::getState()
 {
     return this->state;
 }
 
-int MotorControllerClass::setState(unsigned char channel, unsigned char speed, bool reversed)
+int MotorControllerClass::setState(uint8_t channel, uint8_t speed, bool reversed)
 {
     if (channel > 1)
     {

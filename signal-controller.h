@@ -1,30 +1,30 @@
 
 struct SignalCondition
 {
-    unsigned short motorState;
-    unsigned short pointsState;
-    unsigned char result;
+    uint16_t motorState;
+    uint16_t pointsState;
+    uint8_t result;
 };
 
 struct SignalSet
 {
     SignalCondition *conditions;
     unsigned int conditionCount;
-    unsigned char address;
-    unsigned char currentState;
-    unsigned char defaultState;
+    uint8_t address;
+    uint8_t currentState;
+    uint8_t defaultState;
 };
 
 class SignalControllerClass
 {
 public:
     void begin(SignalSet *signalSets, unsigned int signalSetCount);
-    int readDeviceState(uint8_t address);
-    void updateSignalSets(unsigned short motorState, unsigned short pointsState);
+    int readDeviceState(uint8_t address, uint8_t* buffer, uint8_t quantity);
+    void updateSignalSets(uint16_t motorState, uint16_t pointsState);
 
 private:
-    unsigned char calculateNewState(SignalSet *signalSet, unsigned short motorState, unsigned short pointsState);
-    bool statesMatch(unsigned short expected, unsigned short actual);
+    uint8_t calculateNewState(SignalSet *signalSet, uint16_t motorState, uint16_t pointsState);
+    bool statesMatch(uint16_t expected, uint16_t actual);
     SignalSet *signalSets;
     unsigned int signalSetCount;
 };
