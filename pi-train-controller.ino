@@ -115,7 +115,7 @@ void loop()
       returnValue = SignalController.readDeviceState(command.Channel, state, 2);
       doc["address"] = command.Channel;
       JsonArray data = doc.createNestedArray("states");
-      for(int i; (i < returnValue && i < 2); i++) {
+      for(int i = 0; (i < returnValue && i < 2); i++) {
         data.add(state[i]);
       }
 

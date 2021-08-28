@@ -32,7 +32,9 @@ int SignalControllerClass::readDeviceState(uint8_t address, uint8_t* buffer, uin
 {
   Wire.requestFrom(address, quantity);
   int available = Wire.available();
-  for(int i; (i < available && i < quantity); i++) {
+  Serial.print(available);
+  Serial.println(" bytes availabe to read");
+  for(int i = 0; (i < available && i < quantity); i++) {
       buffer[i] = Wire.read();
   }
 
