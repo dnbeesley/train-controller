@@ -6,6 +6,8 @@
 #include "points-controller.h"
 #include "signal-controller.h"
 
+# define MAX_BYTES_TO_READ 4
+
 SignalCondition signalSet0Contions[4] = {
     {.motorState = 0x01,
      .pointsState = 0x01,
@@ -76,7 +78,8 @@ SignalSet signalSets[3] = {
 
 Command command;
 int returnValue;
-uint8_t state[2];
+uint8_t state[MAX_BYTES_TO_READ];
+uint8_t bytesToRead;
 bool potentialSignalChange;
 
 void setup()
@@ -112,10 +115,16 @@ void loop()
       doc["state"] = returnValue;
       break;
     case READ_DEVICE_COMMAND:
-      returnValue = SignalController.readDeviceState(command.Channel, state, 2);
+      if (command.Value < MAX_BYTES_TO_READ) {
+        bytesToRead = command.Value;
+      } else {
+        bytesToRead = MAX_BYTES_TO_READ;
+      }
+
+      returnValue = SignalController.readDeviceState(command.Channel, state, command.Value);
       doc["address"] = command.Channel;
       JsonArray data = doc.createNestedArray("states");
-      for(int i = 0; (i < returnValue && i < 2); i++) {
+      for(int i = 0; (i < returnValue && i < bytesToRead); i++) {
         data.add(state[i]);
       }
 

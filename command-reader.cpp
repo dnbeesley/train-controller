@@ -82,16 +82,19 @@ int CommandReaderClass::readCommand(Command *command)
         break;
 
     case READ_DEVICE_COMMAND:
-        if (i < 2)
+        if (i < 3)
         {
-            Serial.println("A read device command must have at least 2 bytes plus a terminator.");
+            Serial.println("A read device command must have at least 3 bytes plus a terminator.");
             return -1;
         }
 
         command->Channel = buffer[1];
         command->IsReversed = false;
+        command->Value = buffer[2];
 
-        Serial.print("Read the the state of device ");
+        Serial.print("Read ");
+        Serial.print(command->Value);
+        Serial.print(" bytes from the state of device: ");
         Serial.println(command->Channel, HEX);
         break;
 
