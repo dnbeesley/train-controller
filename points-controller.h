@@ -7,24 +7,9 @@ class PointsControllerClass
 public:
     /**
          * Initialises a new instance of the PointsController class.
-         * @param enablePin The arduino pin to enable the output on the multiplexers
-         * @param output0Pin The input pin 0 of the first multiplexer
-         * @param output1Pin The input pin 1 of the first multiplexer
-         * @param output2Pin The input pin 2 of the first multiplexer
-         * @param output3Pin The input pin 0 of the second multiplexer
-         * @param output4Pin The input pin 1 of the second multiplexer
-         * @param output5Pin The input pin 2 of the second multiplexer
-         * @param pulseTime The number of milliseconds which the output pulse should last.
+         * @param addr The address of the TWI device that controls the points
          **/
-    void begin(
-        uint8_t enablePin,
-        uint8_t output0Pin,
-        uint8_t output1Pin,
-        uint8_t output2Pin,
-        uint8_t output3Pin,
-        uint8_t output4Pin,
-        uint8_t output5Pin,
-        uint16_t pulseTime);
+    void begin(uint8_t addr);
 
     /**
          * Returns the state of the set of points as a bit set.
@@ -40,19 +25,10 @@ public:
     int outputPulse(uint8_t channel);
 
 private:
-    uint16_t pulseTime;
     uint16_t state;
-    uint8_t enablePin;
-    uint8_t output0Pin;
-    uint8_t output1Pin;
-    uint8_t output2Pin;
-    uint8_t output3Pin;
-    uint8_t output4Pin;
-    uint8_t output5Pin;
+    uint8_t addr;
 
     void calculateNewState(uint8_t channel);
-    void outputPulseImpl(uint8_t channel);
-    void setPin(uint8_t pin, uint8_t value);
 };
 
 extern PointsControllerClass PointsController;

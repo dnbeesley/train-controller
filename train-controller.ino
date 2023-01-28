@@ -86,7 +86,7 @@ void setup()
 {
   Serial.begin(9600);
   MotorController.begin();
-  PointsController.begin(16, 10, 7, 6, 5, 4, 2, 500);
+  PointsController.begin(0x40);
   SignalController.begin(signalSets, 3);
 }
 
