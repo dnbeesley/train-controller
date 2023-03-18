@@ -10,7 +10,7 @@ void PointsControllerClass::begin(uint8_t addr)
     this->state = 0x1555;
 
     Wire.beginTransmission(this->addr);
-    Wire.write((uint8_t*)&this->state, 2);
+    Wire.write((uint8_t *)&this->state, 2);
     Wire.endTransmission();
 }
 
@@ -37,8 +37,13 @@ int PointsControllerClass::outputPulse(uint8_t channel)
     }
 
     this->calculateNewState(channel);
-    Wire.beginTransmission(this->addr);
-    Wire.write((uint8_t*)&this->state, 2);
-    Wire.endTransmission();
+    this->outputState();
     return this->state;
+}
+
+void PointsControllerClass::outputState()
+{
+    Wire.beginTransmission(this->addr);
+    Wire.write((uint8_t *)&this->state, 2);
+    Wire.endTransmission();
 }

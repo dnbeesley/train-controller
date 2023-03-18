@@ -19,7 +19,7 @@ class SignalControllerClass
 {
 public:
     void begin(SignalSet *signalSets, unsigned int signalSetCount);
-    int readDeviceState(uint8_t address, uint8_t* buffer, uint8_t quantity);
+    int readDeviceState(uint8_t address, uint8_t *buffer, uint8_t quantity);
     void updateSignalSets(uint16_t motorState, uint16_t pointsState);
 
 private:

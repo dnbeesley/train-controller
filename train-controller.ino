@@ -4,9 +4,14 @@
 #include "command-reader.h"
 #include "motor-controller.h"
 #include "points-controller.h"
+#include "sensor-controller.h"
 #include "signal-controller.h"
 
-# define MAX_BYTES_TO_READ 4
+Sensor sensors[4] = {
+    {.address = 0x50, .length = 2},
+    {.address = 0x51, .length = 3},
+    {.address = 0x52, .length = 3},
+    {.address = 0x53, .length = 2}};
 
 SignalCondition signalSet0Contions[4] = {
     {.motorState = 0x01,
@@ -78,7 +83,6 @@ SignalSet signalSets[3] = {
 
 Command command;
 int returnValue;
-uint8_t state[MAX_BYTES_TO_READ];
 uint8_t bytesToRead;
 bool potentialSignalChange;
 
@@ -93,7 +97,6 @@ void setup()
 void loop()
 {
   StaticJsonDocument<64> doc;
-  potentialSignalChange = false;
   returnValue = CommandReader.readCommand(&command);
   if (returnValue == 0)
   {
@@ -101,42 +104,32 @@ void loop()
     switch (command.CommandType)
     {
     case MOTOR_COMMAND:
-      potentialSignalChange = true;
       returnValue = MotorController.setState(command.Channel, command.Value, command.IsReversed);
       doc["state"] = returnValue;
       break;
     case POINTS_COMMAND:
-      potentialSignalChange = true;
       returnValue = PointsController.outputPulse(command.Channel);
       doc["state"] = returnValue;
       break;
-    case READ_CURRENT_COMMAND:
-      returnValue = MotorController.getCurrent(command.Channel);
-      doc["state"] = returnValue;
-      break;
-    case READ_DEVICE_COMMAND:
-      if (command.Value < MAX_BYTES_TO_READ) {
-        bytesToRead = command.Value;
-      } else {
-        bytesToRead = MAX_BYTES_TO_READ;
-      }
-
-      returnValue = SignalController.readDeviceState(command.Channel, state, command.Value);
-      doc["address"] = command.Channel;
-      JsonArray data = doc.createNestedArray("states");
-      for(int i = 0; (i < returnValue && i < bytesToRead); i++) {
-        data.add(state[i]);
-      }
-
-      break;
-    }
-
-    if (potentialSignalChange)
-    {
-      SignalController.updateSignalSets(MotorController.getState(), PointsController.getState());
     }
 
     serializeJson(doc, Serial);
     Serial.println();
+  }
+
+  // Broadcast states to i2c devices
+  PointsController.outputState();
+  SignalController.updateSignalSets(MotorController.getState(), PointsController.getState());
+
+  // Read all currents being drawn
+  for (int i = 0; i < 2; i++)
+  {
+    MotorController.readCurrent(i);
+  }
+
+  // Read all sensor states
+  for (int i = 0; i < 4; i++)
+  {
+    SensorController.readDeviceState(&sensors[i]);
   }
 }

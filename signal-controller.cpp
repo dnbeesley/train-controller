@@ -28,22 +28,6 @@ void SignalControllerClass::begin(SignalSet *signalSets, unsigned int signalSetC
     Serial.println();
 }
 
-int SignalControllerClass::readDeviceState(uint8_t address, uint8_t* buffer, uint8_t quantity)
-{
-    Wire.requestFrom(address, quantity);
-    int available = Wire.available();
-    Serial.print(available);
-    Serial.println(" bytes availabe to read");
-    for(int i = 0; (i < available && i < quantity); i++) {
-        buffer[i] = Wire.read();
-    }
-
-    while (Wire.read() != -1) {        
-    }
-
-    return available;
-}
-
 void SignalControllerClass::updateSignalSets(uint16_t motorState, uint16_t pointsState)
 {
     StaticJsonDocument<64> doc;
@@ -66,7 +50,8 @@ void SignalControllerClass::updateSignalSets(uint16_t motorState, uint16_t point
         }
     }
 
-    if(hasEntries) {
+    if (hasEntries)
+    {
         serializeJson(doc, Serial);
         Serial.println();
     }
