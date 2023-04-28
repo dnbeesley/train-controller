@@ -12,7 +12,7 @@ int SensorControllerClass::readDeviceState(Sensor *sensor)
     Wire.requestFrom(sensor->address, sensor->length);
     int available = Wire.available();
     Serial.print(available);
-    Serial.println(" bytes availabe to read");
+    Serial.println(" bytes available to read");
     for (int i = 0; (i < available && i < sensor->length); i++)
     {
         this->buffer[i] = Wire.read();
